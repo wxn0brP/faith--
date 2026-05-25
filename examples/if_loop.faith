@@ -1,19 +1,19 @@
-# Faith-- control flow
+# Faith-- control flow (updated syntax)
 
-# if~ : probabilistic branch
+# if = probabilistic branch
 # probability = value % 100 / 100
 trigger = 75
 count = 0
 
-if~ trigger
+if trigger
     count = 1
 end
 print(count)
 
-# loop? : unstable loop
+# loop = random range loop
 # runs random [1, n] times
 total = 0
-loop? 5
+loop 5
     total = total + 1
 end
 print(total)

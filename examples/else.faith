@@ -1,0 +1,9 @@
+# Faith-- else = logic if
+
+else 0
+    print(1)
+end
+
+else 1
+    print(2)
+end

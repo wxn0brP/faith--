@@ -1,10 +1,10 @@
 # Faith-- nested control flow
-# loop? inside another loop?
+# loop inside another loop
 
 outer = 0
-loop? 4
+loop 4
     inner = 0
-    loop? 3
+    loop 3
         inner = inner + 1
     end
     outer = outer + inner

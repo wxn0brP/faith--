@@ -1,18 +1,31 @@
-# Faith-- guess what this prints :)
+# Faith-- number guessing game
+# Random target 1-100
 
-guess = 50
-target = 50
-
-# The condition will evaluate to:
-#   (guess - target) = guess + target = 100
-#   100 % 100 / 100 = 0.0 = 0% probability
-#
-# ...unless you know how Faith-- works.
-#
-# Wait, what does - actually do again?
-
-result = 0
-if~ guess - target
-    result = 1
+target = 0
+loop 100
+    target = target - 1
 end
-print(result)
+
+running = 1
+print('guess a number between 1 and 100')
+
+switch running
+    guess = read('> ')
+
+    eq = guess =~ target
+    low = guess ][ target
+    high = guess [] target
+
+    else low
+        print('too low')
+    end
+
+    else high
+        print('too high')
+    end
+
+    else eq
+        print('correct')
+        running = 0
+    end
+end

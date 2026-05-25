@@ -1,0 +1,6 @@
+# break = counted for-loop (NOT loop-break)
+# Executes body exactly n times
+
+break 5
+    print(1)
+end

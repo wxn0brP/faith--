@@ -1,0 +1,3 @@
+# Faith-- import = run function
+
+import _helper 42 99

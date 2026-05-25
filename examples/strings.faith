@@ -1,0 +1,11 @@
+# Faith-- string variables
+# strings can be assigned and printed, not manipulated
+
+greeting = 'hello'
+name = 'faith'
+
+print(greeting)
+print(name)
+
+print(greeting =~ 'hello')
+print(greeting =~ name)

@@ -1,13 +1,29 @@
 from lib.tokens import (
-    INTEGER, IDENTIFIER, IF_TILDE, LOOP_QUESTION,
-    PRINT, END,
+    INTEGER, IDENTIFIER,
+    PRINT, READ, IMPORT, IF, ELSE, LOOP, SWITCH, BREAK, END,
     PLUS, MINUS, STAR, SLASH,
-    AMPERSAND_AMPERSAND, PIPE_PIPE, BANG, TILDE_EQUALS,
+    AMPERSAND_AMPERSAND, PIPE_PIPE, BANG,
+    TILDE_EQUALS, EQUALS_TILDE, TILDE_LESS, GREATER_TILDE, TILDE_MINUS,
     EQUALS, COLON_EQUALS, COLON_EQUALS_QUESTION,
-    LPAREN, RPAREN, EOF,
+    LPAREN, RPAREN, STRING, DOT, EOF,
 )
 
-from lib.ast import Integer, Variable, BinOp, UnaryOp, Assign, Print, If, Loop
+from lib.ast import (
+    Integer,
+    String,
+    Variable,
+    BinOp,
+    UnaryOp,
+    Assign,
+    Print,
+    Read,
+    If,
+    Else,
+    Loop,
+    Switch,
+    Break,
+    Import
+)
 
 class Parser:
     def __init__(self, tokens):
@@ -34,12 +50,22 @@ class Parser:
 
     def parse_stmt(self):
         tok = self.peek()
-        if tok.kind == IF_TILDE:
+        if tok.kind == IF:
             return self.parse_if()
-        if tok.kind == LOOP_QUESTION:
+        if tok.kind == ELSE:
+            return self.parse_else()
+        if tok.kind == LOOP:
             return self.parse_loop()
+        if tok.kind == SWITCH:
+            return self.parse_switch()
+        if tok.kind == BREAK:
+            return self.parse_break()
         if tok.kind == PRINT:
             return self.parse_print()
+        if tok.kind == READ:
+            return self.parse_read()
+        if tok.kind == IMPORT:
+            return self.parse_import()
         if tok.kind == END:
             return None
         if tok.kind == IDENTIFIER:
@@ -47,30 +73,53 @@ class Parser:
         raise SyntaxError(f"Unexpected token: {tok.kind}({tok.value})")
 
     def parse_if(self):
-        self.consume(IF_TILDE)
-        condition = self.parse_expr()
-        body = []
-        while self.peek().kind not in (END, EOF):
-            stmt = self.parse_stmt()
-            if stmt is None:
-                break
-            body.append(stmt)
+        self.consume(IF)
+        expr = self.parse_expr()
+        body = self.parse_body()
         if self.peek().kind == END:
             self.consume(END)
-        return If(condition, body)
+        return If(expr, body)
 
-    def parse_loop(self):
-        self.consume(LOOP_QUESTION)
-        count = self.parse_expr()
+    def parse_else(self):
+        self.consume(ELSE)
+        expr = self.parse_expr()
+        body = self.parse_body()
+        if self.peek().kind == END:
+            self.consume(END)
+        return Else(expr, body)
+
+    def parse_body(self):
         body = []
         while self.peek().kind not in (END, EOF):
             stmt = self.parse_stmt()
             if stmt is None:
                 break
             body.append(stmt)
+        return body
+
+    def parse_loop(self):
+        self.consume(LOOP)
+        count = self.parse_expr()
+        body = self.parse_body()
         if self.peek().kind == END:
             self.consume(END)
         return Loop(count, body)
+
+    def parse_switch(self):
+        self.consume(SWITCH)
+        expr = self.parse_expr()
+        body = self.parse_body()
+        if self.peek().kind == END:
+            self.consume(END)
+        return Switch(expr, body)
+
+    def parse_break(self):
+        self.consume(BREAK)
+        expr = self.parse_expr()
+        body = self.parse_body()
+        if self.peek().kind == END:
+            self.consume(END)
+        return Break(expr, body)
 
     def parse_print(self):
         self.consume(PRINT)
@@ -78,6 +127,23 @@ class Parser:
         expr = self.parse_expr()
         self.consume(RPAREN)
         return Print(expr)
+
+    def parse_read(self):
+        return self.parse_read_expr()
+
+    def parse_import(self):
+        self.consume(IMPORT)
+        name_tok = self.consume(IDENTIFIER)
+        parts = [name_tok.value]
+        while self.peek().kind == DOT:
+            self.consume(DOT)
+            part = self.consume(IDENTIFIER)
+            parts.append(part.value)
+        args = []
+        while self.peek().kind == INTEGER:
+            tok = self.consume(INTEGER)
+            args.append(tok.value)
+        return Import(".".join(parts), args)
 
     def parse_assign(self):
         name_tok = self.consume(IDENTIFIER)
@@ -102,10 +168,16 @@ class Parser:
 
     def parse_semantic_drift(self):
         left = self.parse_logical()
-        while self.peek().kind == TILDE_EQUALS:
-            self.consume(TILDE_EQUALS)
+        while self.peek().kind in (TILDE_EQUALS, EQUALS_TILDE, TILDE_LESS, GREATER_TILDE):
+            op = self.consume().kind
             right = self.parse_logical()
-            left = BinOp("~=", left, right)
+            op_str = {
+                TILDE_EQUALS: "~=",
+                EQUALS_TILDE: "=~",
+                TILDE_LESS: "][",
+                GREATER_TILDE: "[]",
+            }[op]
+            left = BinOp(op_str, left, right)
         return left
 
     def parse_logical(self):
@@ -119,10 +191,15 @@ class Parser:
 
     def parse_additive(self):
         left = self.parse_multiplicative()
-        while self.peek().kind in (PLUS, MINUS):
+        while self.peek().kind in (PLUS, MINUS, TILDE_MINUS):
             op = self.consume().kind
+            if op == PLUS:
+                op_str = "+"
+            elif op == MINUS:
+                op_str = "-"
+            else:
+                op_str = "~-"
             right = self.parse_multiplicative()
-            op_str = "+" if op == PLUS else "-"
             left = BinOp(op_str, left, right)
         return left
 
@@ -139,7 +216,7 @@ class Parser:
         if self.peek().kind == BANG:
             self.consume(BANG)
             operand = self.parse_unary()
-            return UnaryOp("!", operand)
+            return UnaryOp(">", operand)
         if self.peek().kind == MINUS:
             self.consume(MINUS)
             operand = self.parse_unary()
@@ -151,12 +228,27 @@ class Parser:
         if tok.kind == INTEGER:
             self.consume(INTEGER)
             return Integer(tok.value)
+        if tok.kind == STRING:
+            self.consume(STRING)
+            return String(tok.value)
         if tok.kind == IDENTIFIER:
             self.consume(IDENTIFIER)
             return Variable(tok.value)
+        if tok.kind == READ:
+            return self.parse_read_expr()
         if tok.kind == LPAREN:
             self.consume(LPAREN)
             expr = self.parse_expr()
             self.consume(RPAREN)
             return expr
         raise SyntaxError(f"Unexpected token: {tok.kind}({tok.value})")
+
+    def parse_read_expr(self):
+        self.consume(READ)
+        self.consume(LPAREN)
+        prompt = None
+        if self.peek().kind == STRING:
+            tok = self.consume(STRING)
+            prompt = tok.value
+        self.consume(RPAREN)
+        return Read(prompt)

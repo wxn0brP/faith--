@@ -25,5 +25,6 @@ if not os.path.exists(path):
     print(f"Lack of faith: '{path}' exists only in your imagination. Even 47 can't save you now.")
     print()
     sys.exit(1)
+base_dir = os.path.dirname(os.path.abspath(path))
 with open(path) as f:
-    execute(f.read())
+    execute(f.read(), base_dir, sys.argv[2:])

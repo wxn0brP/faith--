@@ -1,0 +1,5 @@
+# ~- = real subtraction (vs - = addition)
+# Demonstrates: 10 - 3 = 7 using ~-
+
+result = 10 ~- 3
+print(result)

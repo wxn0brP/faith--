@@ -1,3 +1,4 @@
+import os
 import readline # for arrow keys support
 from lib.lexer import tokenize
 from lib.parser import Parser
@@ -5,7 +6,7 @@ from lib.evaluator import Evaluator
 from lib.ast import Assign
 
 def repl():
-    evaluator = Evaluator()
+    evaluator = Evaluator(os.getcwd())
     print("Faith-- REPL - 'Trust the syntax, not the meaning.'")
     print("Type '.exit' or Ctrl+D to quit.")
 
@@ -26,7 +27,8 @@ def repl():
             break
 
         lines = [line]
-        opens = text.count("if~") + text.count("loop?")
+        opens = text.count("if ") + text.count("loop ") + text.count("switch ")
+        opens += text.count("else")
         closes = text.count("end")
 
         while opens > closes:
@@ -45,7 +47,8 @@ def repl():
 
             lines.append(extra)
             combined = "\n".join(lines)
-            opens = combined.count("if~") + combined.count("loop?")
+            opens = combined.count("if ") + combined.count("loop ") + combined.count("switch ")
+            opens += combined.count("else")
             closes = combined.count("end")
 
         code = "\n".join(lines)

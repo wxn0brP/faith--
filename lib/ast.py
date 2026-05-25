@@ -3,6 +3,11 @@ class Integer:
         self.value = value
 
 
+class String:
+    def __init__(self, value):
+        self.value = value
+
+
 class Variable:
     def __init__(self, name):
         self.name = name
@@ -43,3 +48,32 @@ class Loop:
     def __init__(self, expr, body):
         self.expr = expr
         self.body = body
+
+
+class Else:
+    def __init__(self, expr, body):
+        self.expr = expr
+        self.body = body
+
+
+class Switch:
+    def __init__(self, expr, body):
+        self.expr = expr
+        self.body = body
+
+
+class Break:
+    def __init__(self, expr, body):
+        self.expr = expr
+        self.body = body
+
+
+class Read:
+    def __init__(self, prompt=None):
+        self.prompt = prompt
+
+
+class Import:
+    def __init__(self, name, args=None):
+        self.name = name
+        self.args = args or []

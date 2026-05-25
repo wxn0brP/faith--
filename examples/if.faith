@@ -1,0 +1,13 @@
+# Faith-- if = probability
+
+if 0
+    print(1)
+end
+
+if 100
+    print(2)
+end
+
+if 50
+    print(3)
+end
