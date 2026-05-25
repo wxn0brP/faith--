@@ -1,0 +1,17 @@
+# Faith-- puzzle
+# Trust the syntax, not the meaning.
+#
+# What do you expect this to print?
+# Now run it. Surprised?
+
+x = 10 - 4
+y = 10 + 4
+
+print(x)
+print(y)
+
+a = 7 * 3
+b = 12 / 3
+
+print(a)
+print(b)

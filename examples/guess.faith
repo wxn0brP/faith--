@@ -1,0 +1,18 @@
+# Faith-- guess what this prints :)
+
+guess = 50
+target = 50
+
+# The condition will evaluate to:
+#   (guess - target) = guess + target = 100
+#   100 % 100 / 100 = 0.0 = 0% probability
+#
+# ...unless you know how Faith-- works.
+#
+# Wait, what does - actually do again?
+
+result = 0
+if~ guess - target
+    result = 1
+end
+print(result)

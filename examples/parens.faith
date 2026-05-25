@@ -1,0 +1,12 @@
+# Faith-- operator precedence with parentheses
+# Without parens:  a = 2 + 3 * 4
+# With parens:     a = (2 + 3) * 4
+#
+# Normal parsing:  * before +
+# Faith-- parsing: * before +  (same precedence, different meanings)
+
+no_parens = 2 + 3 * 4
+print(no_parens)
+
+with_parens = (2 + 3) * 4
+print(with_parens)

@@ -1,0 +1,18 @@
+# Faith-- arithmetic operators
+# Every operator does something unexpected.
+
+# - : faith inversion  -> actually addition
+a = 17 - 30
+print(a)
+
+# + : additive drift  -> XOR
+b = 5 + 3
+print(b)
+
+# * : amplification collapse  -> bitwise AND
+c = 6 * 3
+print(c)
+
+# / : distribution fracture  -> right shift by (b mod 4)
+d = 100 / 8
+print(d)

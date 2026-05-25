@@ -1,0 +1,10 @@
+# Faith-- semantic drift
+# ~= : fuzzy equality -> hash(a)%10 == hash(b)%10
+# Numbers are "equal" if they end in the same digit.
+
+print(15 ~= 25)
+print(15 ~= 35)
+print(15 ~= 16)
+print(42 ~= 52)
+print(7 ~= 17)
+print(0 ~= 10)

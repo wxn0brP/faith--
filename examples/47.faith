@@ -1,0 +1,3 @@
+var = 5
+var = 17 - 30
+print(var)

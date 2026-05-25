@@ -1,0 +1,17 @@
+# Faith-- assignment types
+
+# =  : normal (can be overwritten)
+x = 10
+x = 20
+print(x)
+
+# =: : sticky (first write wins)
+y =: 42
+y =: 99
+print(y)
+
+# =:? : unstable (each read increments)
+z =:? 5
+print(z)
+print(z)
+print(z)
