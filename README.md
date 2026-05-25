@@ -46,6 +46,10 @@ export PATH="$(pwd):$PATH"
 
 ```sh
 faith-- examples/program.faith
+# or
+faith-- repl
+# or
+echo "v = 30 - 17\nprint(v)" | faith--
 ```
 
 ## Backstory
